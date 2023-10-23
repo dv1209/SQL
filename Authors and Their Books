@@ -1,0 +1,79 @@
+# This project utilized the following dataset on authors, the books they wrote, and the series each book is in
+CREATE TABLE authors (id INTEGER PRIMARY KEY,
+first_name TEXT, last_name TEXT, country TEXT);
+
+INSERT INTO authors (first_name, last_name, country) VALUES ('Stephen', 'King', 'United States');
+INSERT INTO authors (first_name, last_name, country) VALUES ('Mark', 'Twain', 'United States');
+INSERT INTO authors (first_name, last_name, country) VALUES ('JRR', 'Tolkien', 'England');
+INSERT INTO authors (first_name, last_name, country) VALUES ('Ernest', 'Hemingway', 'United States');
+INSERT INTO authors (first_name, last_name, country) VALUES ('James', 'Patterson', 'United States');
+INSERT INTO authors (first_name, last_name, country) VALUES ('Lewis', 'Carroll', 'England');
+INSERT INTO authors (first_name, last_name, country) VALUES ('Ian', 'Fleming', 'England');
+
+CREATE TABLE books (id INTEGER PRIMARY KEY, title TEXT, author_id INTEGER, rating INTEGER, year_published INTEGER, series_id INTEGER);
+
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Adventures of Huckleberry Finn', 2, 3.8, 1884, 3);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Alice''s Adventures in Wonderland', 6, 4.0, 1865, 5);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Along Came a Spider', 5, 4.1, 1993, 1);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Casino Royale', 7, 3.7, 1953, 6);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Shining', 1, 4.3, 1977, 4);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Old Man and the Sea', 4, 3.8, 1952, NULL);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Hobbit', 3, 4.3, 1937, 2);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Fellowship of the Ring', 3, 4.4, 1954, 2);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('The Adventures of Tom Sawyer', 2, 3.9, 1876, 3);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Live and Let Die', 7, 3.6, 1954, 6);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Through the Looking-Glass', 6, 4.0, 1871, 5);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Kiss the Girls', 5, 4.0, 1995, 1);
+INSERT INTO books (title, author_id, rating, year_published, series_id) VALUES ('Doctor Sleep', 1, 4.1, 2013, 4);
+
+CREATE TABLE series (id INTEGER PRIMARY KEY, title TEXT, number_of_books INTEGER);
+
+INSERT INTO series (title, number_of_books) VALUES ('Alex Cross', 32);
+INSERT INTO series (title, number_of_books) VALUES ('The Lord of the Rings', 4);
+INSERT INTO series (title, number_of_books) VALUES ('Adventures of Tom and Huck', 4);
+INSERT INTO series (title, number_of_books) VALUES ('The Shining', 3);
+INSERT INTO series (title, number_of_books) VALUES ('Alice''s Adventures in Wonderland', 2);
+INSERT INTO series (title, number_of_books) VALUES ('James Bond', 14);
+
+
+# List each author's first name, last name, and the series they wrote
+SELECT DISTINCT authors.first_name, authors.last_name, series.title AS series
+FROM authors
+JOIN books
+ON authors.id = books.author_id
+LEFT JOIN series
+ON books.series_id = series.id;
+
+# List each book and it's author
+SELECT books.title AS book, authors.first_name, authors.last_name
+FROM books
+JOIN authors
+ON authors.id = books.author_id;
+
+# List each book and the series it's in
+SELECT books.title AS book, series.title AS series
+FROM books
+LEFT JOIN series
+ON books.series_id = series.id;
+
+# List each book, the year it was published, and the series it's in. Order by year from newest to oldest, then order by book title
+SELECT books.title AS book, books.year_published, series.title AS series
+FROM books
+LEFT JOIN series
+ON books.series_id = series.id
+ORDER BY books.year_published DESC, books.title;
+
+# List each author as well as their books' average rating. Round the rating to 2 decimal places and order the authors from best rated to worst
+SELECT authors.first_name, authors.last_name, ROUND(AVG(books.rating), 2) AS avg_rating
+FROM authors
+JOIN books
+ON books.author_id = authors.id
+GROUP BY authors.first_name, authors.last_name
+ORDER BY avg_rating DESC;
+
+# List each author from England who has a book rated 4 or higher
+SELECT DISTINCT authors.first_name, authors.last_name
+FROM authors
+JOIN books
+ON authors.id = books.author_id
+WHERE authors.country = 'England' AND books.rating >= 4;
