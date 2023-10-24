@@ -1,4 +1,4 @@
-# This project utilized the following dataset on authors, the books they wrote, and the series each book is in
+# This project utilized the following datasets on authors, the books they wrote, and the series each book is in
 CREATE TABLE authors (id INTEGER PRIMARY KEY,
 first_name TEXT, last_name TEXT, country TEXT);
 
