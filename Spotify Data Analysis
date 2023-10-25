@@ -95,5 +95,5 @@ CASE
 END AS song_key, COUNT(song_key) AS number_of_songs
 FROM BIT_DB.spotifydata
 GROUP BY song_key
-ORDER BY COUNT(song_key) DESC
+ORDER BY number_of_songs DESC
 LIMIT 1;
