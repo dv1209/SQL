@@ -1,0 +1,68 @@
+SELECT artist_name, track_name, popularity
+FROM BIT_DB.Spotifydata
+ORDER BY loudness
+LIMIT 1;
+
+SELECT COUNT(*) AS number_of_songs
+FROM BIT_DB.spotifydata
+WHERE tempo > 160;
+
+SELECT artist_name, track_name, energy, popularity
+FROM BIT_DB.Spotifydata
+WHERE tempo < 100;
+
+SELECT artist_name, track_name, popularity, danceability
+FROM BIT_DB.spotifydata
+ORDER BY popularity
+LIMIT 1;
+
+SELECT track_name, popularity
+FROM BIT_DB.Spotifydata
+WHERE artist_name = 'Bad Bunny'
+ORDER BY popularity DESC;
+
+SELECT artist_name, COUNT(artist_name)
+FROM BIT_DB.spotifydata
+GROUP BY artist_name
+HAVING COUNT(artist_name) >= 2;
+
+SELECT artist_name, track_name, 
+CASE 
+    WHEN song_key = 11 THEN 'B' 
+    WHEN song_key = 10 THEN 'A#' 
+    WHEN song_key = 9 THEN 'A' 
+    WHEN song_key = 8 THEN 'G#' 
+    WHEN song_key = 7 THEN 'G' 
+    WHEN song_key = 6 THEN 'F#' 
+    WHEN song_key = 5 THEN 'F' 
+    WHEN song_key = 4 THEN 'E' 
+    WHEN song_key = 3 THEN 'D#' 
+    WHEN song_key = 2 THEN 'D' 
+    WHEN song_key = 1 THEN 'C#' 
+    ELSE 'C' 
+END AS song_key
+FROM BIT_DB.Spotifydata
+WHERE energy < 0.5;
+
+SELECT AVG(danceability)
+FROM BIT_DB.spotifydata;
+
+SELECT
+CASE 
+    WHEN song_key = 11 THEN 'B' 
+    WHEN song_key = 10 THEN 'A#' 
+    WHEN song_key = 9 THEN 'A' 
+    WHEN song_key = 8 THEN 'G#' 
+    WHEN song_key = 7 THEN 'G' 
+    WHEN song_key = 6 THEN 'F#' 
+    WHEN song_key = 5 THEN 'F' 
+    WHEN song_key = 4 THEN 'E' 
+    WHEN song_key = 3 THEN 'D#' 
+    WHEN song_key = 2 THEN 'D' 
+    WHEN song_key = 1 THEN 'C#' 
+    ELSE 'C' 
+END AS song_key, COUNT(song_key) AS number_of_songs
+FROM BIT_DB.spotifydata
+GROUP BY song_key
+ORDER BY COUNT(song_key) DESC
+LIMIT 1;
