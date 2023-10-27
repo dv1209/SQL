@@ -1,3 +1,7 @@
+# This project utilizes a database which included multiple tables on tracks, genres, albums, artists, and playlists
+# There were also tables about the sales of those tracks, as well as the customers who purchased them
+
+# For each customer, show the total number of tracks they purchased.
 SELECT customers.FirstName, customers.LastName, SUM(invoice_items.Quantity) AS tracks_purchased
 FROM customers
 JOIN invoices
@@ -6,10 +10,12 @@ JOIN invoice_items
 ON invoices.invoiceid = invoice_items.InvoiceId
 GROUP BY customers.firstname, customers.LastName;
 
+# Show only the Customers from Brazil.
 SELECT firstname, lastname
 FROM customers
 WHERE country = 'Brazil';
 
+# What is the most-purchased track and how many times was it purchased?
 SELECT tracks.Name AS title, artists.Name AS artist, SUM(invoice_items.Quantity) AS total_purchases
 FROM tracks
 JOIN invoice_items
@@ -22,6 +28,7 @@ GROUP BY tracks.name
 ORDER BY total_purchases DESC
 LIMIT 1;
 
+# Which playlist has the most songs?
 SELECT playlists.name, COUNT(playlist_track.TrackId) AS number_of_tracks
 FROM playlists
 JOIN playlist_track
@@ -30,10 +37,12 @@ GROUP BY playlists.name
 ORDER BY number_of_tracks DESC
 LIMIT 1;
 
+# How many Invoices were there in 2009?
 SELECT COUNT(*) AS number_of_invoices
 FROM invoices
 WHERE invoicedate LIKE '%2009%';
 
+# List all the songs purchased by Isabelle Mercier, along with the album each song is from.
 SELECT tracks.name AS song, albums.title AS album
 FROM tracks
 JOIN albums
@@ -46,6 +55,7 @@ JOIN customers
 ON customers.CustomerId = invoices.CustomerId
 WHERE customers.FirstName = 'Isabelle' AND customers.lastname = 'Mercier';
 
+# For each genre, show how many customers purchased songs.
 SELECT genres.Name AS genre, COUNT(DISTINCT invoices.CustomerId) AS number_of_customers
 FROM genres
 JOIN tracks
@@ -56,6 +66,7 @@ JOIN invoices
 ON invoices.InvoiceId = invoice_items.InvoiceId
 GROUP BY genres.name;
 
+# What is the most-purchased genre?
 SELECT genres.name AS most_purchased_genre
 FROM genres
 JOIN tracks
@@ -66,10 +77,12 @@ GROUP BY genres.name
 ORDER BY SUM(invoice_items.Quantity) DESC
 LIMIT 1;
 
+# List the customers with Gmail email addresses.
 SELECT firstname, lastname
 FROM customers
 WHERE email LIKE '%gmail%';
 
+# List all the tracks in the "TV Shows" playlist.
 SELECT DISTINCT tracks.Name
 FROM tracks
 JOIN playlist_track
