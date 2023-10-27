@@ -1,0 +1,79 @@
+SELECT customers.FirstName, customers.LastName, SUM(invoice_items.Quantity) AS tracks_purchased
+FROM customers
+JOIN invoices
+ON customers.customerid = invoices.CustomerId
+JOIN invoice_items
+ON invoices.invoiceid = invoice_items.InvoiceId
+GROUP BY customers.firstname, customers.LastName;
+
+SELECT firstname, lastname
+FROM customers
+WHERE country = 'Brazil';
+
+SELECT tracks.Name AS title, artists.Name AS artist, SUM(invoice_items.Quantity) AS total_purchases
+FROM tracks
+JOIN invoice_items
+ON tracks.trackid = invoice_items.TrackId
+JOIN albums
+ON tracks.AlbumId = albums.albumid
+JOIN artists
+ON artists.ArtistId = albums.ArtistId
+GROUP BY tracks.name
+ORDER BY total_purchases DESC
+LIMIT 1;
+
+SELECT playlists.name, COUNT(playlist_track.TrackId) AS number_of_tracks
+FROM playlists
+JOIN playlist_track
+ON playlists.PlaylistId = playlist_track.PlaylistId
+GROUP BY playlists.name
+ORDER BY number_of_tracks DESC
+LIMIT 1;
+
+SELECT COUNT(*) AS number_of_invoices
+FROM invoices
+WHERE invoicedate LIKE '%2009%';
+
+SELECT tracks.name AS song, albums.title AS album
+FROM tracks
+JOIN albums
+ON tracks.albumid = albums.AlbumId
+JOIN invoice_items
+ON invoice_items.trackid = tracks.TrackId
+JOIN invoices
+ON invoices.InvoiceId = invoice_items.InvoiceId
+JOIN customers
+ON customers.CustomerId = invoices.CustomerId
+WHERE customers.FirstName = 'Isabelle' AND customers.lastname = 'Mercier';
+
+SELECT genres.Name AS genre, COUNT(DISTINCT invoices.CustomerId) AS number_of_customers
+FROM genres
+JOIN tracks
+ON genres.GenreId = tracks.genreid
+JOIN invoice_items
+ON invoice_items.TrackId = tracks.TrackId
+JOIN invoices
+ON invoices.InvoiceId = invoice_items.InvoiceId
+GROUP BY genres.name;
+
+SELECT genres.name AS most_purchased_genre
+FROM genres
+JOIN tracks
+ON genres.GenreId = tracks.genreid
+JOIN invoice_items
+ON invoice_items.TrackId = tracks.TrackId
+GROUP BY genres.name
+ORDER BY SUM(invoice_items.Quantity) DESC
+LIMIT 1;
+
+SELECT firstname, lastname
+FROM customers
+WHERE email LIKE '%gmail%';
+
+SELECT DISTINCT tracks.Name
+FROM tracks
+JOIN playlist_track
+ON playlist_track.TrackId = tracks.trackid
+JOIN playlists
+ON playlists.PlaylistId = playlist_track.PlaylistId
+WHERE playlists.name = 'TV Shows';
