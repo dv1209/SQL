@@ -1,11 +1,16 @@
+# This project utilized a dataset about every airport in the world
+
+# First, I cleaned the data a little bit to ensure that there were no blanks
 UPDATE airportdata SET elevation_ft = NULL WHERE elevation_ft = '';
 UPDATE airportdata SET municipality = NULL WHERE municipality = '';
 
+# Show how many airports there are per type in descending order
 SELECT type, COUNT(ident) AS airports
 FROM airportdata
 GROUP BY type
 ORDER BY airports DESC;
 
+# What is the highest elevation airport? What is the lowest?
 SELECT ident, name, elevation_ft, continent, iso_country, iso_region, municipality
 FROM airportdata
 WHERE type <> 'closed'
@@ -18,6 +23,7 @@ WHERE elevation_ft IS NOT NULL AND type <> 'closed'
 ORDER BY elevation_ft
 LIMIT 1;
 
+# What is the northernmost airport? What is the southernmost?
 SELECT ident, name, continent, iso_country, iso_region, municipality
 FROM airportdata
 WHERE type <> 'closed'
@@ -30,6 +36,7 @@ WHERE type <> 'closed'
 ORDER BY latitude_deg
 LIMIT 1;
 
+# How many airports are in each continent?
 SELECT CASE
     WHEN continent = 'NA' THEN 'North America'
     WHEN continent = 'SA' THEN 'South America'
@@ -44,36 +51,43 @@ WHERE type <> 'closed'
 GROUP BY continent
 ORDER BY airports DESC;
 
+# List all the large airports in Texas and order them by elevation
 SELECT ident, name, municipality, type, elevation_ft, iso_region
 FROM airportdata
 WHERE type = 'large_airport' AND iso_region = 'US-TX'
 ORDER BY elevation_ft DESC;
 
+# List all heliports in North Carolina
 SELECT ident, name, municipality, type, iso_region
 FROM airportdata
 WHERE type = 'heliport' AND iso_region = 'US-NC';
 
+# What is the northernmost airport in Hawaii?
 SELECT ident, name, municipality, iso_region, type
 FROM airportdata
 WHERE iso_region = 'US-HI' AND type <> 'closed'
 ORDER BY latitude_deg DESC
 LIMIT 1;
 
+# What is the southernmost airport in Australia?
 SELECT ident, name, municipality, iso_region, iso_country, type
 FROM airportdata
 WHERE iso_country = 'AU' AND type <> 'closed'
 ORDER BY latitude_deg
 LIMIT 1;
 
+# What is the highest elevation airport per type?
 SELECT type, ident, name, MAX(elevation_ft) AS elevation, continent, iso_country, iso_region, municipality
 FROM airportdata
 GROUP BY type;
 
+# What is the highest elevation airport per country?
 SELECT iso_country, ident, name, type, MAX(elevation_ft) AS elevation, municipality, iso_region, continent
 FROM airportdata
 WHERE type <> 'closed'
 GROUP BY iso_country;
 
+# How many airports are open? How many are closed?
 SELECT CASE
     WHEN type = 'closed' THEN 'closed'
     ELSE 'open'
