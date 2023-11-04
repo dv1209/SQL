@@ -1,9 +1,9 @@
+# This project utilized a dataset about movies, as well as their genre, rating, director, and more
+
+# First, I cleaned the data up in Excel, and then I used SQL to replace all blanks with NULL
 UPDATE moviedata SET meta_score = NULL, gross = NULL, genre_2 = NULL, genre_3 = NULL, certification = NULL, stars = NULL WHERE meta_score = '' OR gross = '' OR genre_2 = '' OR genre_3 = '' OR certification = '' OR stars = '' OR gross = 0;
 
-SELECT *
-FROM moviedata
-LIMIT 20;
-
+# Show the highest rated movie per genre
 WITH cte AS (
     SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
     FROM moviedata
@@ -23,6 +23,7 @@ SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, di
 FROM cte
 GROUP BY genre;
 
+# Show the directors that have multiple movies on the above list
 WITH cte2 AS (
     WITH cte AS (
         SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
@@ -48,6 +49,7 @@ FROM cte2
 GROUP BY director
 HAVING movies > 1;
 
+# How many movies were released per decade?
 SELECT CASE
     WHEN year_of_release >= 2020 THEN '2020''s'
     WHEN year_of_release >= 2010 THEN '2010''s'
@@ -65,6 +67,7 @@ END AS decade, COUNT(movie_name) AS movies
 FROM moviedata
 GROUP BY decade;
 
+# Show the highest rated movie per decade
 SELECT CASE
     WHEN year_of_release >= 2020 THEN '2020''s'
     WHEN year_of_release >= 2010 THEN '2010''s'
@@ -82,36 +85,43 @@ END AS decade, movie_name, genre, year_of_release, MAX(movie_rating) AS movie_ra
 FROM moviedata
 GROUP BY decade;
 
+# Show all movies directed by Steven Spielberg
 SELECT movie_name, genre, year_of_release, movie_rating
 FROM moviedata
 WHERE director LIKE '%Steven Spielberg%'
 ORDER BY movie_name;
 
+# What are the 10 highest grossing movies?
 SELECT movie_name, genre, year_of_release, gross
 FROM moviedata
 ORDER BY gross DESC
 LIMIT 10;
 
+# What are the 10 longest movies?
 SELECT movie_name, genre, year_of_release, run_time_mins
 FROM moviedata
 ORDER BY run_time_mins DESC
 LIMIT 10;
 
+# What are the 10 shortest movies? 
 SELECT movie_name, genre, year_of_release, run_time_mins
 FROM moviedata
 ORDER BY run_time_mins
 LIMIT 10;
 
+# Show all comedy movies rated PG that were released between 1980 and 2016
 SELECT movie_name, year_of_release
 FROM moviedata
 WHERE certification = 'PG' AND (genre = 'Comedy' OR genre_2 = 'Comedy' OR genre_3 = 'Comedy') AND year_of_release BETWEEN 1980 AND 2016;
 
+# What is the longest movie directed by Quentin Tarantino? 
 SELECT movie_name, genre, year_of_release, run_time_mins
 FROM moviedata
 WHERE director LIKE '%Quentin Tarantino%'
 ORDER BY run_time_mins DESC
 LIMIT 1;
 
+# Show the box office revenue per decade
 SELECT CASE
     WHEN year_of_release >= 2020 THEN '2020''s'
     WHEN year_of_release >= 2010 THEN '2010''s'
