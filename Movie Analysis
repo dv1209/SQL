@@ -1,0 +1,131 @@
+UPDATE moviedata SET meta_score = NULL, gross = NULL, genre_2 = NULL, genre_3 = NULL, certification = NULL, stars = NULL WHERE meta_score = '' OR gross = '' OR genre_2 = '' OR genre_3 = '' OR certification = '' OR stars = '' OR gross = 0;
+
+SELECT *
+FROM moviedata
+LIMIT 20;
+
+WITH cte AS (
+    SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+    FROM moviedata
+    GROUP BY genre
+    UNION
+    SELECT genre_2, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+    FROM moviedata
+    WHERE genre_2 IS NOT NULL
+    GROUP BY genre_2
+    UNION
+    SELECT genre_3, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+    FROM moviedata
+    WHERE genre_3 IS NOT NULL
+    GROUP BY genre_3
+)
+SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+FROM cte
+GROUP BY genre;
+
+WITH cte2 AS (
+    WITH cte AS (
+        SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+        FROM moviedata
+        GROUP BY genre
+        UNION
+        SELECT genre_2, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+        FROM moviedata
+        WHERE genre_2 IS NOT NULL
+        GROUP BY genre_2
+        UNION
+        SELECT genre_3, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+        FROM moviedata
+        WHERE genre_3 IS NOT NULL
+        GROUP BY genre_3
+    )
+    SELECT genre, movie_name, year_of_release, MAX(movie_rating) AS movie_rating, director
+    FROM cte
+    GROUP BY genre
+)
+SELECT director, COUNT(DISTINCT movie_name) AS movies
+FROM cte2
+GROUP BY director
+HAVING movies > 1;
+
+SELECT CASE
+    WHEN year_of_release >= 2020 THEN '2020''s'
+    WHEN year_of_release >= 2010 THEN '2010''s'
+    WHEN year_of_release >= 2000 THEN '2000''s'
+    WHEN year_of_release >= 1990 THEN '1990''s'
+    WHEN year_of_release >= 1980 THEN '1980''s'
+    WHEN year_of_release >= 1970 THEN '1970''s'
+    WHEN year_of_release >= 1960 THEN '1960''s'
+    WHEN year_of_release >= 1950 THEN '1950''s'
+    WHEN year_of_release >= 1940 THEN '1940''s'
+    WHEN year_of_release >= 1930 THEN '1930''s'
+    WHEN year_of_release >= 1920 THEN '1920''s'
+    ELSE '1910''s'
+END AS decade, COUNT(movie_name) AS movies
+FROM moviedata
+GROUP BY decade;
+
+SELECT CASE
+    WHEN year_of_release >= 2020 THEN '2020''s'
+    WHEN year_of_release >= 2010 THEN '2010''s'
+    WHEN year_of_release >= 2000 THEN '2000''s'
+    WHEN year_of_release >= 1990 THEN '1990''s'
+    WHEN year_of_release >= 1980 THEN '1980''s'
+    WHEN year_of_release >= 1970 THEN '1970''s'
+    WHEN year_of_release >= 1960 THEN '1960''s'
+    WHEN year_of_release >= 1950 THEN '1950''s'
+    WHEN year_of_release >= 1940 THEN '1940''s'
+    WHEN year_of_release >= 1930 THEN '1930''s'
+    WHEN year_of_release >= 1920 THEN '1920''s'
+    ELSE '1910''s'
+END AS decade, movie_name, genre, year_of_release, MAX(movie_rating) AS movie_rating
+FROM moviedata
+GROUP BY decade;
+
+SELECT movie_name, genre, year_of_release, movie_rating
+FROM moviedata
+WHERE director LIKE '%Steven Spielberg%'
+ORDER BY movie_name;
+
+SELECT movie_name, genre, year_of_release, gross
+FROM moviedata
+ORDER BY gross DESC
+LIMIT 10;
+
+SELECT movie_name, genre, year_of_release, run_time_mins
+FROM moviedata
+ORDER BY run_time_mins DESC
+LIMIT 10;
+
+SELECT movie_name, genre, year_of_release, run_time_mins
+FROM moviedata
+ORDER BY run_time_mins
+LIMIT 10;
+
+SELECT movie_name, year_of_release
+FROM moviedata
+WHERE certification = 'PG' AND (genre = 'Comedy' OR genre_2 = 'Comedy' OR genre_3 = 'Comedy') AND year_of_release BETWEEN 1980 AND 2016;
+
+SELECT movie_name, genre, year_of_release, run_time_mins
+FROM moviedata
+WHERE director LIKE '%Quentin Tarantino%'
+ORDER BY run_time_mins DESC
+LIMIT 1;
+
+SELECT CASE
+    WHEN year_of_release >= 2020 THEN '2020''s'
+    WHEN year_of_release >= 2010 THEN '2010''s'
+    WHEN year_of_release >= 2000 THEN '2000''s'
+    WHEN year_of_release >= 1990 THEN '1990''s'
+    WHEN year_of_release >= 1980 THEN '1980''s'
+    WHEN year_of_release >= 1970 THEN '1970''s'
+    WHEN year_of_release >= 1960 THEN '1960''s'
+    WHEN year_of_release >= 1950 THEN '1950''s'
+    WHEN year_of_release >= 1940 THEN '1940''s'
+    WHEN year_of_release >= 1930 THEN '1930''s'
+    WHEN year_of_release >= 1920 THEN '1920''s'
+    ELSE '1910''s'
+END AS decade, ROUND(SUM(gross), 2) AS revenue
+FROM moviedata
+WHERE gross IS NOT NULL
+GROUP BY decade;
