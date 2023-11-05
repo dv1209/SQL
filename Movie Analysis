@@ -1,7 +1,12 @@
 # This project utilized a dataset about movies, as well as their genre, rating, director, and more
 
-# First, I cleaned the data up in Excel, and then I used SQL to replace all blanks with NULL
-UPDATE moviedata SET meta_score = NULL, gross = NULL, genre_2 = NULL, genre_3 = NULL, certification = NULL, stars = NULL WHERE meta_score = '' OR gross = '' OR genre_2 = '' OR genre_3 = '' OR certification = '' OR stars = '' OR gross = 0;
+# First, I cleaned the data up in Excel, and then I used SQL to add NULLs where necessary
+UPDATE moviedata SET meta_score = NULL WHERE meta_score = 'NULL';
+UPDATE moviedata SET gross = NULL WHERE gross = 'NULL' OR gross = 0;
+UPDATE moviedata SET genre_2 = NULL WHERE genre_2 = 'NULL';
+UPDATE moviedata SET genre_3 = NULL WHERE genre_3 = 'NULL';
+UPDATE moviedata SET certification = NULL WHERE certification = 'NULL';
+UPDATE moviedata SET stars = NULL WHERE stars = 'NULL';
 
 # Show the highest rated movie per genre
 WITH cte AS (
