@@ -1,0 +1,81 @@
+SELECT orderid, ROUND(SUM(unitprice*quantity), 2) AS total_price
+FROM orderdetails
+GROUP BY orderid;
+
+SELECT customers.country, COUNT(orders.orderID) AS orders
+FROM customers
+JOIN orders
+ON customers.customerID = orders.customerID
+GROUP BY customers.country
+ORDER BY orders DESC;
+
+SELECT SUBSTR(orders.orderDate, 1, 7) AS month, ROUND(SUM(orderdetails.unitPrice*orderdetails.quantity), 2) AS revenue
+FROM orders
+JOIN orderdetails
+ON orders.orderID = orderdetails.orderID
+GROUP BY month;
+
+SELECT CASE
+    WHEN orders.orderdate LIKE '2015%' THEN '2015'
+    WHEN orders.orderdate LIKE '2014%' THEN '2014'
+    ELSE '2013'
+END AS year, ROUND(SUM(orderdetails.unitPrice*orderdetails.quantity), 2) AS revenue
+FROM orders
+JOIN orderdetails
+ON orders.orderID = orderdetails.orderID
+GROUP BY year;
+
+SELECT customers.country, ROUND(AVG(JULIANDAY(orders.shippedDate) - JULIANDAY(orders.orderDate))) AS avg_shipping_time
+FROM customers
+JOIN orders
+ON customers.customerid = orders.customerid
+GROUP BY customers.country;
+
+SELECT products.productName, SUM(orderdetails.quantity) AS number_sold
+FROM products
+JOIN orderdetails
+ON products.productID = orderdetails.productid
+GROUP BY products.productname
+ORDER BY number_sold DESC;
+
+SELECT productname, unitprice
+FROM products
+ORDER BY unitprice DESC;
+
+SELECT products.productname, ROUND(SUM(orderdetails.unitPrice * orderdetails.quantity), 2) AS revenue
+FROM products
+JOIN orderdetails
+ON products.productid = orderdetails.productid
+GROUP BY products.productname
+ORDER BY revenue DESC;
+
+SELECT categories.categoryname, SUM(orderdetails.quantity) AS number_sold
+FROM categories
+JOIN products
+ON categories.categoryid = products.categoryid
+JOIN orderdetails
+ON orderdetails.productID = products.productid
+GROUP BY categories.categoryname
+ORDER BY number_sold DESC;
+
+SELECT categories.categoryname, ROUND(AVG(products.unitPrice), 2) AS avg_price
+FROM categories
+JOIN products
+ON categories.categoryID = products.categoryID
+GROUP BY categories.categoryname;
+
+SELECT employees.employeeName, SUM(orderdetails.quantity) AS products_sold
+FROM employees
+JOIN orders
+ON employees.employeeID = orders.employeeID
+JOIN orderdetails
+ON orderdetails.orderID = orders.orderID
+GROUP BY employees.employeename
+ORDER BY products_sold DESC;
+
+SELECT shippers.companyName, ROUND(AVG(JULIANDAY(orders.shippedDate) - JULIANDAY(orders.orderDate))) AS avg_shipping_time
+FROM shippers
+JOIN orders
+ON shippers.shipperid = orders.shipperid
+GROUP BY shippers.companyname
+ORDER BY avg_shipping_time;
